@@ -3,6 +3,7 @@ plugins {
     id 'war'
     id 'org.springframework.boot' version '3.0.0'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'io.freefair.lombok' version '6.6.1'
 }
 
 group = 'com.shop.list'
@@ -24,6 +25,8 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    compileOnly 'org.projectlombok:lombok:6.6.1'
+    annotationProcessor 'org.projectlombok:lombok:6.6.1'
 }
 
 tasks.named('test') {
