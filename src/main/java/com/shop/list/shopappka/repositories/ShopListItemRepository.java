@@ -1,6 +1,6 @@
 package com.shop.list.shopappka.repositories;
 
-import com.shop.list.shopappka.models.ShopListItem;
+import com.shop.list.shopappka.models.domain.ShopListItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

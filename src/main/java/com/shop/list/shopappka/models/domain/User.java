@@ -1,4 +1,4 @@
-package com.shop.list.shopappka.models;
+package com.shop.list.shopappka.models.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,10 +1,8 @@
-package com.shop.list.shopappka.models;
+package com.shop.list.shopappka.models.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +17,4 @@ public class Group {
 
     @OneToMany(mappedBy = "group")
     private Set<User> users;
-
-    @OneToMany(mappedBy = "group")
-    private Set<ShopListItem> items;
 }

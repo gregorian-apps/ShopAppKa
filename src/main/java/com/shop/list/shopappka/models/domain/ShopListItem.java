@@ -1,4 +1,4 @@
-package com.shop.list.shopappka.models;
+package com.shop.list.shopappka.models.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,7 +15,4 @@ public class ShopListItem {
     private String name;
     private int amount;
     private Category category;
-
-    @ManyToOne
-    private Group group;
 }
