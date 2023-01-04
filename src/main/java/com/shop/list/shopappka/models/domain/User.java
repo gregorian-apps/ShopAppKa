@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.models.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -18,6 +19,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String login;
+
+    @Email
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
     private String password;
     private String name;
 
