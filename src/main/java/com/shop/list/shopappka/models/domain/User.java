@@ -12,19 +12,26 @@ import java.util.UUID;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
+@Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "login")
     private String login;
 
     @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "password")
     private String password;
-    private String name;
+
+    @Column(name = "first_name")
+    private String firstName;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
