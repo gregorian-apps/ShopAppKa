@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,7 +17,8 @@ import java.util.UUID;
 @Builder
 public class User {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
 
     @Column(name = "login")
     private String login;
