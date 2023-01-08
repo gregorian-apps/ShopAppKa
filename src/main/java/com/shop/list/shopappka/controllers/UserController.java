@@ -44,7 +44,7 @@ public class UserController {
         User user1 = userService.signUpNewUser(user);
 
         log.info("User with email {} has signed up successfully", user.getEmail());
-        return new ResponseEntity<>(user1, HttpStatus.OK);
+        return new ResponseEntity<>(user1, HttpStatus.CREATED);
     }
 
     @PutMapping("update/{id}")
