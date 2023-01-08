@@ -60,8 +60,8 @@ public class UserService {
             user.setFirstName(updateUser.getFirstName());
             userRepository.save(user);
         } else {
-            log.warn("User with email {} doesn't exist in the system", updateUser.getEmail());
-            throw new UserException("User doesn't exist in the system with email: " + updateUser.getEmail());
+            log.warn("User with id {} doesn't exist in the system", id);
+            throw new UserException("User doesn't exist in the system with id: " + id);
         }
     }
 }

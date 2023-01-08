@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<?> updateUserData(@RequestBody @Valid UpdateUser updateUser, @PathVariable("id") String id, BindingResult result) {
+    public ResponseEntity<?> updateUserData(@PathVariable("id") String id, @Valid @RequestBody UpdateUser updateUser, BindingResult result) {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
         if (Objects.isNull(updateUser)) {
             log.error("UpdateUserData is null");

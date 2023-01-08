@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserRequest extends UpdateUser{
+public class UserRequest extends UpdateUser {
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 6, message = "Password should have at least 4 characters")
     private String password;
