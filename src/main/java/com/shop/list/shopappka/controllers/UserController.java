@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -43,11 +44,11 @@ public class UserController {
         User user1 = userService.signUpNewUser(user);
 
         log.info("User with email {} has signed up successfully", user.getEmail());
-        return new ResponseEntity<>(user1, HttpStatus.OK);
+        return new ResponseEntity<>(user1, HttpStatus.CREATED);
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<?> updateUserData(@PathVariable("id") String id, @Valid @RequestBody UpdateUser updateUser, BindingResult result) {
+    public ResponseEntity<?> updateUserData(@PathVariable("id") Long id, @Valid @RequestBody UpdateUser updateUser, BindingResult result) {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
         if (Objects.isNull(updateUser)) {
             log.error("UpdateUserData is null");
@@ -62,5 +63,16 @@ public class UserController {
         return new ResponseEntity<>("User data has updated successfully", HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getUsers() {
+        List<User> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
+        User user = userService.getUserById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 }

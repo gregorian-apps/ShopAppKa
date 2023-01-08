@@ -5,14 +5,13 @@ import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.payload.UserRequest;
 import com.shop.list.shopappka.repositories.UserRepository;
-import com.shop.list.shopappka.utils.FormatUtils;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -39,7 +38,6 @@ public class UserService {
         }
 
         User user = User.builder()
-                .id(UUID.randomUUID())
                 .login(userRequest.getLogin())
                 .password(userRequest.getPassword())
                 .firstName(userRequest.getFirstName())
@@ -48,10 +46,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void updateUserData(@NonNull UpdateUser updateUser, String id) {
-        UUID uuid = FormatUtils.getUUIDFromString(id);
-        assert uuid != null;
-        Optional<User> existingUser = userRepository.findById(uuid);
+    public void updateUserData(@NonNull UpdateUser updateUser, Long id) {
+        Optional<User> existingUser = userRepository.findById(id);
 
         if(existingUser.isPresent()) {
             User user = existingUser.get();
@@ -62,6 +58,21 @@ public class UserService {
         } else {
             log.warn("User with id {} doesn't exist in the system", id);
             throw new UserException("User doesn't exist in the system with id: " + id);
+        }
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User getUserById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            log.error("User with id {} not found", id);
+            throw new UserException("User with id " + id + " not found");
         }
     }
 }
