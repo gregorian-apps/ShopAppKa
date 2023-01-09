@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.payload.UserRequest;
@@ -42,6 +43,7 @@ public class UserService {
                 .password(userRequest.getPassword())
                 .firstName(userRequest.getFirstName())
                 .email(userRequest.getEmail())
+                .role(Role.ROLE_USER.name())
                 .build();
         return userRepository.save(user);
     }

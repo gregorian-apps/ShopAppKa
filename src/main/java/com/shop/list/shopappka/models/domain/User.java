@@ -33,6 +33,9 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
+    @Column(name = "role")
+    private String role;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
