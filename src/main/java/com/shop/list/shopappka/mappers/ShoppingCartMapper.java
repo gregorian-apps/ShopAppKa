@@ -2,7 +2,7 @@ package com.shop.list.shopappka.mappers;
 
 import com.shop.list.shopappka.mappers.converters.ProductItemsConverter;
 import com.shop.list.shopappka.models.domain.ShoppingCart;
-import com.shop.list.shopappka.models.domain.dto.ShoppingCartDTO;
+import com.shop.list.shopappka.models.dto.ShoppingCartDTO;
 
 import java.util.UUID;
 

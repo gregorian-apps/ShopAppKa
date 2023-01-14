@@ -10,7 +10,7 @@ public class UpdateUser {
 
     @NotBlank(message = "Login cannot be blank")
     @Size(min = 4, message = "Login has to at least 4 characters")
-    private String login;
+    private String username;
 
     @Email(message = "Provide valid email")
     @NotBlank(message = "Email cannot be blank")
