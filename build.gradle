@@ -1,17 +1,26 @@
 plugins {
     id 'java'
-    id 'war'
     id 'org.springframework.boot' version '3.0.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'io.freefair.lombok' version '6.6.1'
 }
 
+repositories {
+    mavenCentral()
+}
+
 group = 'com.shop.list'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
+targetCompatibility = '17'
 
-repositories {
-    mavenCentral()
+
+wrapper {
+    version = '7.5.1'
+}
+
+jar {
+    archiveName("shopappka.jar")
 }
 
 dependencies {
@@ -22,8 +31,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     runtimeOnly 'org.postgresql:postgresql'
-    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok:6.6.1'
