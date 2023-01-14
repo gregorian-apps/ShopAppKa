@@ -30,13 +30,13 @@ public class TokenProvider implements Serializable {
     public String generateToken(Authentication auth) {
         User user = (User) auth.getPrincipal();
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role",user.getRole());
+        claims.put("role", user.getRole());
         claims.put("email", user.getEmail());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date((System.currentTimeMillis())+ jwtExpirationMs * 1000))
+                .setExpiration(new Date((System.currentTimeMillis()) + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
