@@ -1,6 +1,6 @@
 package com.shop.list.shopappka.services;
 
-import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class JwtUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         return userRepository.findUserByUsernameOrEmail(usernameOrEmail).orElseThrow(() -> {
             log.error("User not found with provided name: {}", usernameOrEmail);
-            throw new UserException("User not found with provided name: " + usernameOrEmail);
+            throw new UserNotFoundException("User not found with provided name: " + usernameOrEmail);
         });
     }
 }

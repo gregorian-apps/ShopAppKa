@@ -1,6 +1,8 @@
 package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.exceptions.UserExistsException;
+import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
@@ -34,12 +36,12 @@ public class UserService {
 
         if(userByEmailExists.isPresent()){
             log.warn("User with email {} exists in the system", userByEmailExists.get().getEmail());
-            throw new UserException("User with email: " + userByEmailExists.get().getEmail() + " exists in the system");
+            throw new UserExistsException("User with email: " + userByEmailExists.get().getEmail() + " exists in the system");
         }
 
         if(userByLoginExists.isPresent()){
             log.warn("User with email {} exists in the system", userByLoginExists.get().getUsername());
-            throw new UserException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
+            throw new UserExistsException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
         }
 
         User user = User.builder()
@@ -63,7 +65,7 @@ public class UserService {
             return userRepository.save(user);
         } else {
             log.error("User with id {} doesn't exist in the system", id);
-            throw new UserException("User doesn't exist in the system with id: " + id);
+            throw new UserNotFoundException("User doesn't exist in the system with id: " + id);
         }
     }
 
@@ -78,7 +80,7 @@ public class UserService {
             return optionalUser.get();
         } else {
             log.error("User with id {} not found", id);
-            throw new UserException("User with id " + id + " not found");
+            throw new UserNotFoundException("User with id " + id + " not found");
         }
     }
 }

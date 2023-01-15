@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.services;
 
-import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.exceptions.UserExistsException;
+import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
@@ -81,16 +82,16 @@ class UserServiceTest {
         }
 
         @Test
-        void shouldThrownUserExceptionWhenUserEmailExistsInTheSystem() {
+        void shouldThrownUserExistsExceptionWhenUserEmailExistsInTheSystem() {
             when(userRepository.findUserByEmail(anyString())).thenReturn(Optional.of(user));
-            assertThrows(UserException.class, () -> userService.signUpNewUser(userRequest));
+            assertThrows(UserExistsException.class, () -> userService.signUpNewUser(userRequest));
         }
 
 
         @Test
-        void shouldThrownUserExceptionWhenUserUsernameExistsInTheSystem() {
+        void shouldThrownUserExistsExceptionWhenUserUsernameExistsInTheSystem() {
             when(userRepository.findUserByUsername(anyString())).thenReturn(Optional.of(user));
-            assertThrows(UserException.class, () -> userService.signUpNewUser(userRequest));
+            assertThrows(UserExistsException.class, () -> userService.signUpNewUser(userRequest));
         }
     }
 
@@ -121,14 +122,14 @@ class UserServiceTest {
         }
 
         @Test
-        void shouldThrownUserExceptionWhenUserDoesNotExistInTheSystem() {
+        void shouldThrownUserNotFoundExceptionWhenUserDoesNotExistInTheSystem() {
             UpdateUser updateUser = UpdateUser.builder()
                     .username("dummy1")
                     .firstName("Peter")
                     .email("email@email.com")
                     .build();
             when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-            assertThrows(UserException.class, () -> userService.updateUserData(updateUser, 2L));
+            assertThrows(UserNotFoundException.class, () -> userService.updateUserData(updateUser, 2L));
         }
     }
 
@@ -183,9 +184,9 @@ class UserServiceTest {
         }
 
         @Test
-        void shouldThrownAUserExceptionWhenUserDoesNotExist() {
+        void shouldThrownAUserNotFoundExceptionWhenUserDoesNotExist() {
             when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
-            assertThrows(UserException.class, () -> userService.getUserById(1L));
+            assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
         }
     }
 
