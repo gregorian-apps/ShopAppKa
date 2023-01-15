@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.payload.UserRequest;
@@ -8,6 +9,7 @@ import com.shop.list.shopappka.repositories.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +21,16 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User signUpNewUser(@NotNull UserRequest userRequest) {
         Optional<User> userByEmailExists = userRepository.findUserByEmail(userRequest.getEmail());
-        Optional<User> userByLoginExists = userRepository.findUserByLogin(userRequest.getLogin());
+        Optional<User> userByLoginExists = userRepository.findUserByLogin(userRequest.getUsername());
 
         if(userByEmailExists.isPresent()){
             log.warn("User with email {} exists in the system", userByEmailExists.get().getEmail());
@@ -33,15 +38,16 @@ public class UserService {
         }
 
         if(userByLoginExists.isPresent()){
-            log.warn("User with email {} exists in the system", userByLoginExists.get().getLogin());
-            throw new UserException("User with login: " + userByLoginExists.get().getLogin() + " exists in the system");
+            log.warn("User with email {} exists in the system", userByLoginExists.get().getUsername());
+            throw new UserException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
         }
 
         User user = User.builder()
-                .login(userRequest.getLogin())
-                .password(userRequest.getPassword())
+                .username(userRequest.getUsername())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
                 .firstName(userRequest.getFirstName())
                 .email(userRequest.getEmail())
+                .role(Role.ROLE_USER.name())
                 .build();
         return userRepository.save(user);
     }
@@ -52,7 +58,7 @@ public class UserService {
         if(existingUser.isPresent()) {
             User user = existingUser.get();
             user.setEmail(updateUser.getEmail());
-            user.setLogin(updateUser.getLogin());
+            user.setUsername(updateUser.getUsername());
             user.setFirstName(updateUser.getFirstName());
             userRepository.save(user);
         } else {

@@ -1,4 +1,4 @@
-package com.shop.list.shopappka.models.domain.dto;
+package com.shop.list.shopappka.models.dto;
 
 import com.shop.list.shopappka.mappers.converters.ProductItemsConverter;
 import com.shop.list.shopappka.models.domain.ShopListItem;
