@@ -3,11 +3,13 @@ package com.shop.list.shopappka.controllers;
 import com.shop.list.shopappka.configurations.auth.TokenProvider;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.JwtTokenResponse;
-import com.shop.list.shopappka.payload.LoginRequest;
 import com.shop.list.shopappka.payload.UserRequest;
 import com.shop.list.shopappka.services.MapValidationErrorService;
 import com.shop.list.shopappka.services.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,4 +72,18 @@ public class AuthController {
         return new ResponseEntity<>(new JwtTokenResponse(token), HttpStatus.OK);
     }
 
+    @Data
+    private static class LoginRequest {
+
+        @NotBlank(message = "Provide username")
+        @Size(min = 4, message = "Username has at least 4 characters")
+        private String username;
+
+        @NotBlank(message = "Provide password")
+        @Size(min = 6, message = "Password has at least 6 characters")
+        private String password;
+    }
+
 }
+
+

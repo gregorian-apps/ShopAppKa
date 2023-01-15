@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class UpdateUser {
 
-    @NotBlank(message = "Login cannot be blank")
-    @Size(min = 4, message = "Login has to at least 4 characters")
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 4, message = "Username has to at least 4 characters")
     private String username;
 
     @Email(message = "Provide valid email")
