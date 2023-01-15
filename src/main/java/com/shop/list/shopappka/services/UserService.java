@@ -30,7 +30,7 @@ public class UserService {
 
     public User signUpNewUser(@NotNull UserRequest userRequest) {
         Optional<User> userByEmailExists = userRepository.findUserByEmail(userRequest.getEmail());
-        Optional<User> userByLoginExists = userRepository.findUserByLogin(userRequest.getUsername());
+        Optional<User> userByLoginExists = userRepository.findUserByUsername(userRequest.getUsername());
 
         if(userByEmailExists.isPresent()){
             log.warn("User with email {} exists in the system", userByEmailExists.get().getEmail());
@@ -52,7 +52,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void updateUserData(@NonNull UpdateUser updateUser, Long id) {
+    public User updateUserData(@NonNull UpdateUser updateUser, Long id) throws UserException {
         Optional<User> existingUser = userRepository.findById(id);
 
         if(existingUser.isPresent()) {
@@ -60,9 +60,9 @@ public class UserService {
             user.setEmail(updateUser.getEmail());
             user.setUsername(updateUser.getUsername());
             user.setFirstName(updateUser.getFirstName());
-            userRepository.save(user);
+            return userRepository.save(user);
         } else {
-            log.warn("User with id {} doesn't exist in the system", id);
+            log.error("User with id {} doesn't exist in the system", id);
             throw new UserException("User doesn't exist in the system with id: " + id);
         }
     }

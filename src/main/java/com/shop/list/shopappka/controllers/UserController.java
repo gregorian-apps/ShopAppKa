@@ -40,8 +40,8 @@ public class UserController {
             return errorMap;
         }
 
-        userService.updateUserData(updateUser, id);
-        return new ResponseEntity<>("User data has updated successfully", HttpStatus.OK);
+        User updatedUser = userService.updateUserData(updateUser, id);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping
