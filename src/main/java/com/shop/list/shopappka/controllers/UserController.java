@@ -6,7 +6,6 @@ import com.shop.list.shopappka.services.MapValidationErrorService;
 import com.shop.list.shopappka.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,7 +17,6 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/api/data/users")
-@Profile("prod")
 public class UserController {
 
     private final UserService userService;

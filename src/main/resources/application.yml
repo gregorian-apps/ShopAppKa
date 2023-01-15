@@ -14,7 +14,7 @@ spring:
       platform: postgres
   config:
     activate:
-      on-profile: prod
+      on-profile:
 shopappka:
   app:
     jwtSecret: secretKey

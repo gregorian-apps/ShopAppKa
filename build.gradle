@@ -33,13 +33,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'org.testcontainers:testcontainers:1.17.6'
-    implementation 'org.testcontainers:postgresql:1.17.6'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.testcontainers:junit-jupiter:1.17.6'
     compileOnly 'org.projectlombok:lombok:6.6.1'
     annotationProcessor 'org.projectlombok:lombok:6.6.1'
 }
