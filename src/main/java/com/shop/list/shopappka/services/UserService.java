@@ -11,6 +11,7 @@ import com.shop.list.shopappka.repositories.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@Profile("prod")
 public class UserService {
 
     private final UserRepository userRepository;

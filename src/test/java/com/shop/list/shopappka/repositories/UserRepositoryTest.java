@@ -1,25 +1,49 @@
 package com.shop.list.shopappka.repositories;
 
 import com.shop.list.shopappka.models.domain.User;
+import org.junit.ClassRule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
 
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-class UserRepositoryTest {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@Profile("test")
+@ContextConfiguration(initializers = {UserRepositoryTest.Initializer.class})
+public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private TestEntityManager entityManager;
+    @ClassRule
+    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11-alpine")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("sa")
+            .withPassword("sa");
+
+    static class Initializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            postgreSQLContainer.start();
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
+                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
+                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
+                    "spring.jpa.hibernate.ddl-auto=create-drop"
+            ).applyTo(configurableApplicationContext.getEnvironment());
+        }
+    }
 
     @Test
     void shouldReturnSavedUserAfterSaveOperation(){
@@ -44,9 +68,7 @@ class UserRepositoryTest {
                 .password("Dummy Password")
                 .role("ROLE_USER")
                 .build();
-        User savedUser = userRepository.save(user);
-
-        User foundUser = userRepository.findUserByEmail(savedUser.getEmail()).get();
+        User foundUser = userRepository.findUserByEmail(user.getEmail()).get();
 
         assertNotNull(foundUser);
     }
