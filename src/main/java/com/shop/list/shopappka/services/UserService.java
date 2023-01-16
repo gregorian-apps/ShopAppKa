@@ -1,6 +1,8 @@
 package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.UserException;
+import com.shop.list.shopappka.exceptions.UserExistsException;
+import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.User;
 import com.shop.list.shopappka.payload.UpdateUser;
@@ -30,16 +32,16 @@ public class UserService {
 
     public User signUpNewUser(@NotNull UserRequest userRequest) {
         Optional<User> userByEmailExists = userRepository.findUserByEmail(userRequest.getEmail());
-        Optional<User> userByLoginExists = userRepository.findUserByLogin(userRequest.getUsername());
+        Optional<User> userByLoginExists = userRepository.findUserByUsername(userRequest.getUsername());
 
         if(userByEmailExists.isPresent()){
             log.warn("User with email {} exists in the system", userByEmailExists.get().getEmail());
-            throw new UserException("User with email: " + userByEmailExists.get().getEmail() + " exists in the system");
+            throw new UserExistsException("User with email: " + userByEmailExists.get().getEmail() + " exists in the system");
         }
 
         if(userByLoginExists.isPresent()){
             log.warn("User with email {} exists in the system", userByLoginExists.get().getUsername());
-            throw new UserException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
+            throw new UserExistsException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
         }
 
         User user = User.builder()
@@ -52,7 +54,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void updateUserData(@NonNull UpdateUser updateUser, Long id) {
+    public User updateUserData(@NonNull UpdateUser updateUser, Long id) throws UserException {
         Optional<User> existingUser = userRepository.findById(id);
 
         if(existingUser.isPresent()) {
@@ -60,10 +62,10 @@ public class UserService {
             user.setEmail(updateUser.getEmail());
             user.setUsername(updateUser.getUsername());
             user.setFirstName(updateUser.getFirstName());
-            userRepository.save(user);
+            return userRepository.save(user);
         } else {
-            log.warn("User with id {} doesn't exist in the system", id);
-            throw new UserException("User doesn't exist in the system with id: " + id);
+            log.error("User with id {} doesn't exist in the system", id);
+            throw new UserNotFoundException("User doesn't exist in the system with id: " + id);
         }
     }
 
@@ -78,7 +80,7 @@ public class UserService {
             return optionalUser.get();
         } else {
             log.error("User with id {} not found", id);
-            throw new UserException("User with id " + id + " not found");
+            throw new UserNotFoundException("User with id " + id + " not found");
         }
     }
 }
