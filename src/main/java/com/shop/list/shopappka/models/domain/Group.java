@@ -1,10 +1,7 @@
 package com.shop.list.shopappka.models.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -14,8 +11,10 @@ import java.util.Set;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "groups")
+@Builder
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,8 +11,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
-    public final ResponseEntity<Object> handleException(UserException ue) {
+    public final ResponseEntity<Object> handleUserException(UserException ue) {
         String exceptionResponse = ue.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleGroupException(GroupException ge) {
+        String exceptionResponse = ge.getMessage();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }
