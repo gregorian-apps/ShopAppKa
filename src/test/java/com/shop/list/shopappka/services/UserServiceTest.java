@@ -3,7 +3,7 @@ package com.shop.list.shopappka.services;
 import com.shop.list.shopappka.exceptions.UserExistsException;
 import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
-import com.shop.list.shopappka.models.domain.User;
+import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.payload.UserRequest;
 import com.shop.list.shopappka.repositories.UserRepository;
@@ -39,7 +39,7 @@ class UserServiceTest {
 
     private UserRequest userRequest;
 
-    private User user;
+    private UserEntity user;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +50,7 @@ class UserServiceTest {
                 .password("dummyPass")
                 .build();
 
-        user = User.builder()
+        user = UserEntity.builder()
                 .id(1L)
                 .username("dummy")
                 .password("gadsdhgaj#8asd9u1sh")
@@ -68,9 +68,9 @@ class UserServiceTest {
             when(userRepository.findUserByEmail(userRequest.getEmail())).thenReturn(Optional.empty());
             when(userRepository.findUserByUsername(userRequest.getUsername())).thenReturn(Optional.empty());
             when(passwordEncoder.encode(userRequest.getPassword())).thenReturn("gadsdhgaj#8asd9u1sh");
-            when(userRepository.save(any(User.class))).thenReturn(user);
+            when(userRepository.save(any(UserEntity.class))).thenReturn(user);
 
-            User savedUser = userService.signUpNewUser(userRequest);
+            UserEntity savedUser = userService.signUpNewUser(userRequest);
 
             assertAll(
                     () -> assertNotNull(savedUser),
@@ -106,12 +106,12 @@ class UserServiceTest {
                     .email("email@email.com")
                     .build();
             when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-            when(userRepository.save(any(User.class))).thenReturn(user);
+            when(userRepository.save(any(UserEntity.class))).thenReturn(user);
             user.setFirstName(updateUser.getFirstName());
             user.setEmail(updateUser.getEmail());
             user.setUsername(updateUser.getUsername());
 
-            User updatedUser = userService.updateUserData(updateUser, 1L);
+            UserEntity updatedUser = userService.updateUserData(updateUser, 1L);
             System.out.println(updatedUser);
             assertAll(
                     () -> assertNotNull(updatedUser),
@@ -138,20 +138,20 @@ class UserServiceTest {
     class getAllUsers {
         @Test
         void shouldReturnListOfUsersWhoExistsInTheSystem() {
-            User user2 = User.builder()
+            UserEntity user2 = UserEntity.builder()
                     .id(2L)
                     .username("dummy2")
                     .firstName("David")
                     .password("DummyPass")
                     .role(Role.ROLE_USER.name())
                     .build();
-            List<User> listOfUsers = new ArrayList<>();
+            List<UserEntity> listOfUsers = new ArrayList<>();
             listOfUsers.add(user);
             listOfUsers.add(user2);
 
             when(userRepository.findAll()).thenReturn(listOfUsers);
 
-            List<User> users = userService.getAllUsers();
+            List<UserEntity> users = userService.getAllUsers();
 
             assertEquals(2, users.size());
         }
@@ -160,7 +160,7 @@ class UserServiceTest {
         void shouldReturnEmptyListOfUsersWhenUsersNotExistInTheSystem() {
             when(userRepository.findAll()).thenReturn(new ArrayList<>());
 
-            List<User> users = userService.getAllUsers();
+            List<UserEntity> users = userService.getAllUsers();
 
             assertTrue(users.isEmpty());
         }
@@ -173,7 +173,7 @@ class UserServiceTest {
         void shouldReturnConcreteUserWhenUserExistsById() {
             when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-            User foundUser = userService.getUserById(1L);
+            UserEntity foundUser = userService.getUserById(1L);
 
             assertAll(
                     () -> assertNotNull(foundUser),
