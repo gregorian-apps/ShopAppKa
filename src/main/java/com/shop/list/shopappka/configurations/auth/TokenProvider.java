@@ -1,6 +1,5 @@
 package com.shop.list.shopappka.configurations.auth;
 
-import com.shop.list.shopappka.models.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class TokenProvider implements Serializable {
@@ -28,13 +25,9 @@ public class TokenProvider implements Serializable {
     private Long jwtExpirationMs;
 
     public String generateToken(Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole());
-        claims.put("email", user.getEmail());
+        String username = auth.getName();
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(user.getUsername())
+                .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date((System.currentTimeMillis()) + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

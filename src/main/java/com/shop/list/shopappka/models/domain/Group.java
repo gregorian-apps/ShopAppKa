@@ -22,7 +22,7 @@ public class Group {
 
     @OneToMany(mappedBy = "group")
     @ToString.Exclude
-    private Set<User> users;
+    private Set<UserEntity> users;
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,6 @@
 package com.shop.list.shopappka.controllers;
 
-import com.shop.list.shopappka.models.domain.User;
+import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.services.MapValidationErrorService;
 import com.shop.list.shopappka.services.UserService;
@@ -40,19 +40,19 @@ public class UserController {
             return errorMap;
         }
 
-        User updatedUser = userService.updateUserData(updateUser, id);
+        UserEntity updatedUser = userService.updateUserData(updateUser, id);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> getUsers() {
-        List<User> users = userService.getAllUsers();
+        List<UserEntity> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
-        User user = userService.getUserById(id);
+        UserEntity user = userService.getUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
