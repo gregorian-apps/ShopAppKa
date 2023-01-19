@@ -62,7 +62,7 @@ public class GroupService {
     public Group getGroupById(Long id) {
         return groupRepository.getGroupById(id).orElseThrow(() -> {
             log.warn("Group with id {} not found", id);
-            throw new GroupNotFoundException("Group with id: " + id + "not found");
+            throw new GroupNotFoundException("Group with id: " + id + " not found");
         });
     }
 }
