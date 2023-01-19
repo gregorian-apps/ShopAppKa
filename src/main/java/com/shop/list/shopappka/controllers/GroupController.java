@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/data/groups")
@@ -66,5 +67,17 @@ public class GroupController {
     public ResponseEntity<?> deleteGroup(@PathVariable Long id) {
         groupService.deleteGroup(id);
         return new ResponseEntity<>("Group has deleted with success", HttpStatus.OK);
+    }
+
+    @PostMapping("assign/{id}")
+    public ResponseEntity<?> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<Long> users) {
+        Group group = groupService.assignUsersToGroup(users, id);
+        return new ResponseEntity<>(group, HttpStatus.OK);
+    }
+
+    @DeleteMapping("delete/{groupId}/user/{userId}")
+    public ResponseEntity<?> deleteUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId) {
+        Group group = groupService.deleteUserFromGroup(groupId, userId);
+        return new ResponseEntity<>(group, HttpStatus.OK);
     }
 }

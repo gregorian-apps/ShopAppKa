@@ -9,7 +9,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -18,11 +17,24 @@ import java.util.Set;
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "group_id")
+    private Long groupId;
     private String name;
 
-    @OneToMany(mappedBy = "group")
-    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(
+            name = "user_groups",
+            joinColumns = {
+                    @JoinColumn(name = "group_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "user_id")
+            }
+    )
     private Set<UserEntity> users;
 
     @Override
@@ -30,7 +42,7 @@ public class Group {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Group group = (Group) o;
-        return id != null && Objects.equals(id, group.id);
+        return groupId != null && Objects.equals(groupId, group.groupId);
     }
 
     @Override

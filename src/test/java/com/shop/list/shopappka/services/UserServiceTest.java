@@ -51,7 +51,7 @@ class UserServiceTest {
                 .build();
 
         user = UserEntity.builder()
-                .id(1L)
+                .userId(1L)
                 .username("dummy")
                 .password("gadsdhgaj#8asd9u1sh")
                 .email("dummy@dummy.com")
@@ -77,7 +77,7 @@ class UserServiceTest {
                     () -> assertEquals(user.getUsername(), savedUser.getUsername()),
                     () -> assertEquals(user.getEmail(), savedUser.getEmail()),
                     () -> assertEquals(user.getRole(), savedUser.getRole()),
-                    () -> assertNotNull(savedUser.getId())
+                    () -> assertNotNull(savedUser.getUserId())
             );
         }
 
@@ -139,7 +139,7 @@ class UserServiceTest {
         @Test
         void shouldReturnListOfUsersWhoExistsInTheSystem() {
             UserEntity user2 = UserEntity.builder()
-                    .id(2L)
+                    .userId(2L)
                     .username("dummy2")
                     .firstName("David")
                     .password("DummyPass")
