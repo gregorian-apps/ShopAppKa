@@ -69,7 +69,7 @@ public class GroupController {
         return new ResponseEntity<>("Group has deleted with success", HttpStatus.OK);
     }
 
-    @PostMapping("assign/{id}")
+    @PostMapping("{id}/assign")
     public ResponseEntity<?> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<Long> users) {
         Group group = groupService.assignUsersToGroup(users, id);
         return new ResponseEntity<>(group, HttpStatus.OK);
