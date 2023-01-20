@@ -37,9 +37,6 @@ public class Group {
     )
     private Set<UserEntity> users;
 
-    @OneToMany(mappedBy = "group")
-    private Set<ShoppingCart> shoppingCarts;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -9,7 +9,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "product-items")
@@ -29,8 +28,8 @@ public class ProductItem {
     @Column(name = "product_type")
     private ProductType productType;
 
-    @ManyToOne
-    @JoinColumn(name = "shooping_cart_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "shooping_cart_id", nullable = false)
     @JsonIgnore
     private ShoppingCart shoppingCart;
 

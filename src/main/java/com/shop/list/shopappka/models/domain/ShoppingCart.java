@@ -1,15 +1,14 @@
 package com.shop.list.shopappka.models.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @AllArgsConstructor
 @Table(name = "shopping-carts")
@@ -25,13 +24,10 @@ public class ShoppingCart {
     @Column(name = "shopping_cart_name")
     private String shoppingCartName;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "group_id", nullable = false)
+    @JsonIgnore
     private Group group;
-
-    @OneToMany(mappedBy = "shoppingCart")
-    @ToString.Exclude
-    private Set<ProductItem> productItems;
 
     @Override
     public boolean equals(Object o) {
