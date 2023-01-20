@@ -1,10 +1,12 @@
 package com.shop.list.shopappka.models.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -18,7 +20,8 @@ import java.util.Objects;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "username")
     private String username;
@@ -36,16 +39,16 @@ public class UserEntity {
     @Column(name = "role")
     private String role;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users")
+    @JsonIgnore
+    private List<Group> groups;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         UserEntity user = (UserEntity) o;
-        return id != null && Objects.equals(id, user.id);
+        return userId != null && Objects.equals(userId, user.userId);
     }
 
     @Override
