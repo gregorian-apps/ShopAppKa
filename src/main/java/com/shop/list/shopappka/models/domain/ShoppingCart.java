@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
-import java.util.UUID;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,25 +18,27 @@ import java.util.UUID;
 public class ShoppingCart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "shopping_cart_id")
+    private Long shoppingCartId;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "product-items", columnDefinition = "TEXT")
-    private String productItemsJSON;
+    @Column(name = "shopping_cart_name")
+    private String shoppingCartName;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @OneToMany(mappedBy = "shoppingCart")
+    @ToString.Exclude
+    private Set<ProductItem> productItems;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ShoppingCart that = (ShoppingCart) o;
-        return uuid != null && Objects.equals(uuid, that.uuid);
+        return shoppingCartId != null && Objects.equals(shoppingCartId, that.shoppingCartId);
     }
 
     @Override
