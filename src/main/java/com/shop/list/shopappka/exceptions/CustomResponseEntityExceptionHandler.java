@@ -21,4 +21,10 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         String exceptionResponse = ge.getMessage();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleShoppingException(ShoppingException se) {
+        String exceptionResponse = se.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
 }
