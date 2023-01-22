@@ -65,5 +65,4 @@ public class ProductItemService {
     public List<ProductItem> getAllProductItemsByShoppingCartId(Long shoppingCartId) {
         return productItemRepository.findAllByShoppingCart(shoppingCartId);
     }
-
 }

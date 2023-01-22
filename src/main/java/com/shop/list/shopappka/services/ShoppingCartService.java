@@ -36,6 +36,4 @@ public class ShoppingCartService {
             throw new ShoppingCartNotFoundException("Shopping Cart with id: " + id + " not found.");
         });
     }
-
-
 }
