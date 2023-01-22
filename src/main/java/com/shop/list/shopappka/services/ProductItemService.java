@@ -33,9 +33,13 @@ public class ProductItemService {
         return productItemRepository.saveAll(productItems);
     }
 
-    /*
-     * @TODO Add update method for product item in shopping cart
-     *   */
+    public ProductItem updateProductItemInShoppingCart(Long shoppingCartId, Long productId, ProductItem updatedProductItem) {
+        ProductItem productItem = getProductItemByIdFromShoppingCart(shoppingCartId, productId);
+        productItem.setProductName(updatedProductItem.getProductName());
+        productItem.setAmount(updatedProductItem.getAmount());
+        productItem.setProductType(updatedProductItem.getProductType());
+        return productItemRepository.save(productItem);
+    }
 
     public void deleteProductItemFromShoppingCart(Long shoppingCartId, Long productId) {
         ProductItem productItem = getProductItemByIdFromShoppingCart(shoppingCartId, productId);
