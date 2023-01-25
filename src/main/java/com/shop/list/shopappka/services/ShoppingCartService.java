@@ -3,22 +3,31 @@ package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.ShoppingCartExistsException;
 import com.shop.list.shopappka.exceptions.ShoppingCartNotFoundException;
+import com.shop.list.shopappka.models.domain.Group;
 import com.shop.list.shopappka.models.domain.ShoppingCart;
 import com.shop.list.shopappka.repositories.ShoppingCartRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository) {
+    private final GroupService groupService;
+
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, GroupService groupService) {
         this.shoppingCartRepository = shoppingCartRepository;
+        this.groupService = groupService;
     }
 
-    public ShoppingCart addNewShoppingCart(String shoppingCartName) {
-        if (!shoppingCartRepository.existsByShoppingCartName(shoppingCartName)) {
-            ShoppingCart shoppingCart = ShoppingCart.builder().shoppingCartName(shoppingCartName).build();
+    public ShoppingCart addNewShoppingCart(String shoppingCartName, Long groupId) {
+        if (shoppingCartRepository.findShoppingCartByName(shoppingCartName).isEmpty()) {
+            Group group = groupService.getGroupById(groupId);
+            ShoppingCart shoppingCart = ShoppingCart.builder()
+                    .shoppingCartName(shoppingCartName)
+                    .group(group).build();
             return shoppingCartRepository.save(shoppingCart);
         } else {
             throw new ShoppingCartExistsException("Shopping Cart with name: " + shoppingCartName + " exists");
@@ -29,6 +38,10 @@ public class ShoppingCartService {
         ShoppingCart shoppingCart = getShoppingCartById(shoppingCartId);
         shoppingCart.setShoppingCartName(updatedName);
         return shoppingCartRepository.save(shoppingCart);
+    }
+
+    public List<ShoppingCart> getAllShoppingCartsByGroupId(Long groupId) {
+        return shoppingCartRepository.findAllShoppingCartsByGroupId(groupId);
     }
 
     private ShoppingCart getShoppingCartById(Long id) {

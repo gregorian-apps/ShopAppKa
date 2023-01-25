@@ -4,10 +4,12 @@ package com.shop.list.shopappka.services;
 import com.shop.list.shopappka.exceptions.ProductItemNotFoundException;
 import com.shop.list.shopappka.models.domain.ProductItem;
 import com.shop.list.shopappka.models.domain.ShoppingCart;
+import com.shop.list.shopappka.payload.ProductItemRequest;
 import com.shop.list.shopappka.repositories.ProductItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,16 +26,15 @@ public class ProductItemService {
         this.shoppingCartService = shoppingCartService;
     }
 
-    public List<ProductItem> addProductItemsToShoppingCart(String shoppingCartName, List<ProductItem> productItems) {
-        ShoppingCart shoppingCart = shoppingCartService.addNewShoppingCart(shoppingCartName);
-        for (ProductItem item : productItems) {
-            item.setShoppingCart(shoppingCart);
-        }
+    public List<ProductItem> addProductItemsToShoppingCart(Long groupId, String shoppingCartName, List<ProductItemRequest> productItemList) {
+        ShoppingCart shoppingCart = shoppingCartService.addNewShoppingCart(shoppingCartName, groupId);
+        List<ProductItem> productItems = mapToListOfProductItem(shoppingCartName, productItemList, shoppingCart);
         log.info("Added new products to shopping Cart with name {} successfully", shoppingCartName);
         return productItemRepository.saveAll(productItems);
     }
 
-    public ProductItem updateProductItemInShoppingCart(Long shoppingCartId, Long productId, ProductItem updatedProductItem) {
+
+    public ProductItem updateProductItemInShoppingCart(Long shoppingCartId, Long productId, ProductItemRequest updatedProductItem) {
         ProductItem productItem = getProductItemByIdFromShoppingCart(shoppingCartId, productId);
         productItem.setProductName(updatedProductItem.getProductName());
         productItem.setAmount(updatedProductItem.getAmount());
@@ -64,5 +65,19 @@ public class ProductItemService {
 
     public List<ProductItem> getAllProductItemsByShoppingCartId(Long shoppingCartId) {
         return productItemRepository.findAllByShoppingCart(shoppingCartId);
+    }
+
+    private List<ProductItem> mapToListOfProductItem(String shoppingCartName, List<ProductItemRequest> productItemList, ShoppingCart shoppingCart) {
+        List<ProductItem> productItems = new ArrayList<>();
+        for (ProductItemRequest item : productItemList) {
+            ProductItem productItem = ProductItem.builder()
+                    .productName(shoppingCartName)
+                    .productType(item.getProductType())
+                    .amount(item.getAmount())
+                    .shoppingCart(shoppingCart)
+                    .build();
+            productItems.add(productItem);
+        }
+        return productItems;
     }
 }
