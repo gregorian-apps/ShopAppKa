@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface ProductItemRepository extends JpaRepository<ProductItem, UUID> {
 
-    @Query("SELECT p FROM ProductItem p WHERE p.shoppingCart=:id")
+    @Query("SELECT p FROM ProductItem p WHERE p.shoppingCart.shoppingCartId=:id")
     List<ProductItem> findAllByShoppingCart(@Param("id") Long shoppingCartId);
 }

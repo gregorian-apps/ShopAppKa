@@ -6,12 +6,14 @@ import com.shop.list.shopappka.models.domain.ProductItem;
 import com.shop.list.shopappka.models.domain.ShoppingCart;
 import com.shop.list.shopappka.payload.ProductItemRequest;
 import com.shop.list.shopappka.repositories.ProductItemRepository;
+import com.shop.list.shopappka.repositories.ShoppingCartRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,13 +23,21 @@ public class ProductItemService {
 
     private final ShoppingCartService shoppingCartService;
 
-    public ProductItemService(ProductItemRepository productItemRepository, ShoppingCartService shoppingCartService) {
+    private final ShoppingCartRepository shoppingCartRepository;
+
+    public ProductItemService(ProductItemRepository productItemRepository,
+                              ShoppingCartService shoppingCartService,
+                              ShoppingCartRepository shoppingCartRepository) {
         this.productItemRepository = productItemRepository;
         this.shoppingCartService = shoppingCartService;
+        this.shoppingCartRepository = shoppingCartRepository;
     }
 
     public List<ProductItem> addProductItemsToShoppingCart(Long groupId, String shoppingCartName, List<ProductItemRequest> productItemList) {
-        ShoppingCart shoppingCart = shoppingCartService.addNewShoppingCart(shoppingCartName, groupId);
+        Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findShoppingCartByName(shoppingCartName);
+        if (shoppingCart.isEmpty()) {
+            shoppingCart = Optional.ofNullable(shoppingCartService.addNewShoppingCart(shoppingCartName, groupId));
+        }
         List<ProductItem> productItems = mapToListOfProductItem(shoppingCartName, productItemList, shoppingCart);
         log.info("Added new products to shopping Cart with name {} successfully", shoppingCartName);
         return productItemRepository.saveAll(productItems);
@@ -67,14 +77,14 @@ public class ProductItemService {
         return productItemRepository.findAllByShoppingCart(shoppingCartId);
     }
 
-    private List<ProductItem> mapToListOfProductItem(String shoppingCartName, List<ProductItemRequest> productItemList, ShoppingCart shoppingCart) {
+    private List<ProductItem> mapToListOfProductItem(String shoppingCartName, List<ProductItemRequest> productItemList, Optional<ShoppingCart> shoppingCart) {
         List<ProductItem> productItems = new ArrayList<>();
         for (ProductItemRequest item : productItemList) {
             ProductItem productItem = ProductItem.builder()
                     .productName(shoppingCartName)
                     .productType(item.getProductType())
                     .amount(item.getAmount())
-                    .shoppingCart(shoppingCart)
+                    .shoppingCart(shoppingCart.orElse(null))
                     .build();
             productItems.add(productItem);
         }

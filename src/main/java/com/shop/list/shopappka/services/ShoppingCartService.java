@@ -44,6 +44,11 @@ public class ShoppingCartService {
         return shoppingCartRepository.findAllShoppingCartsByGroupId(groupId);
     }
 
+    public void deleteShoppingCartById(Long shoppingId) {
+        ShoppingCart shoppingCart = getShoppingCartById(shoppingId);
+        shoppingCartRepository.delete(shoppingCart);
+    }
+
     private ShoppingCart getShoppingCartById(Long id) {
         return shoppingCartRepository.findShoppingCartByShoppingCartId(id).orElseThrow(() -> {
             throw new ShoppingCartNotFoundException("Shopping Cart with id: " + id + " not found.");

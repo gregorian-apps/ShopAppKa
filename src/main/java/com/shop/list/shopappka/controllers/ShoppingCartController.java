@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/data/groups/{groupId}/shoppingCarts/")
+@RequestMapping("/api/data/groups/{groupId}/shoppingCarts")
 public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
@@ -23,7 +23,9 @@ public class ShoppingCartController {
 
     private final MapValidationErrorService mapValidationErrorService;
 
-    public ShoppingCartController(ShoppingCartService shoppingCartService, ProductItemService productItemService, MapValidationErrorService mapValidationErrorService) {
+    public ShoppingCartController(ShoppingCartService shoppingCartService,
+                                  ProductItemService productItemService,
+                                  MapValidationErrorService mapValidationErrorService) {
         this.shoppingCartService = shoppingCartService;
         this.productItemService = productItemService;
         this.mapValidationErrorService = mapValidationErrorService;
@@ -61,5 +63,11 @@ public class ShoppingCartController {
     public ResponseEntity<List<ShoppingCart>> getAllShoppingCarts(@PathVariable Long groupId) {
         List<ShoppingCart> shoppingCarts = shoppingCartService.getAllShoppingCartsByGroupId(groupId);
         return new ResponseEntity<>(shoppingCarts, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{shoppingId}")
+    public ResponseEntity<?> deleteShoppingCart(@PathVariable Long shoppingId) {
+        shoppingCartService.deleteShoppingCartById(shoppingId);
+        return new ResponseEntity<>("Shopping cart with id: " + shoppingId + " has been deleted", HttpStatus.OK);
     }
 }

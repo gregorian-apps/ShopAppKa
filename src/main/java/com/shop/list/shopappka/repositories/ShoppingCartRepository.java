@@ -19,6 +19,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, UUID
     @Query("SELECT sc FROM ShoppingCart sc WHERE sc.shoppingCartId=:id")
     Optional<ShoppingCart> findShoppingCartByShoppingCartId(@Param("id") Long id);
 
-    @Query("SELECT sc FROM ShoppingCart sc WHERE sc.group=:id")
+    @Query("SELECT sc FROM ShoppingCart sc WHERE sc.group.groupId=:id")
     List<ShoppingCart> findAllShoppingCartsByGroupId(@Param("id") Long groupId);
 }

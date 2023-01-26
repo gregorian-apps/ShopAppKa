@@ -49,4 +49,16 @@ public class ProductItemController {
         List<ProductItem> productItems = productItemService.getAllProductItemsByShoppingCartId(shoppingCartId);
         return new ResponseEntity<>(productItems, HttpStatus.OK);
     }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProductFromShoppingCart(@PathVariable Long shoppingCartId, @PathVariable Long productId) {
+        productItemService.deleteProductItemFromShoppingCart(shoppingCartId, productId);
+        return new ResponseEntity<>("Product with id: " + productId + "has been deleted from shopping cart", HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAllProductsFromShoppingCart(@PathVariable Long shoppingCartId) {
+        productItemService.deleteAllProductItemFromShoppingCart(shoppingCartId);
+        return new ResponseEntity<>("All products has been deleted from shopping cart with id: " + shoppingCartId, HttpStatus.OK);
+    }
 }
