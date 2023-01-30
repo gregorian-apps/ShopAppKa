@@ -1,6 +1,6 @@
 package com.shop.list.shopappka.models.domain;
 
-public enum Category {
+public enum ProductType {
     MILKS,
     BREADS,
     CLEANING,

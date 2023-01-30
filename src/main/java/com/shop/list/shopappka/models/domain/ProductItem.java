@@ -9,32 +9,38 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Entity
+@RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "shopping-carts")
+@Entity
+@Table(name = "product-items")
 @Builder
-@NoArgsConstructor
-public class ShoppingCart {
-
+public class ProductItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "shopping_cart_id")
-    private Long shoppingCartId;
+    @Column(name = "product_id")
+    private Long productId;
 
-    @Column(name = "shopping_cart_name")
-    private String shoppingCartName;
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
+    @Column(name = "amount", nullable = false)
+    private int amount;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "product_type")
+    private ProductType productType;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_id", nullable = false)
+    @JoinColumn(name = "shooping_cart_id", nullable = false)
     @JsonIgnore
-    private Group group;
+    private ShoppingCart shoppingCart;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ShoppingCart that = (ShoppingCart) o;
-        return shoppingCartId != null && Objects.equals(shoppingCartId, that.shoppingCartId);
+        ProductItem that = (ProductItem) o;
+        return productId != null && Objects.equals(productId, that.productId);
     }
 
     @Override
