@@ -67,7 +67,8 @@ public class ShoppingCartController {
 
     @DeleteMapping("{shoppingId}")
     public ResponseEntity<?> deleteShoppingCart(@PathVariable Long shoppingId) {
+        productItemService.deleteAllProductItemFromShoppingCart(shoppingId);
         shoppingCartService.deleteShoppingCartById(shoppingId);
-        return new ResponseEntity<>("Shopping cart with id: " + shoppingId + " has been deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Shopping cart with id: " + shoppingId + " has been deleted with products", HttpStatus.OK);
     }
 }
