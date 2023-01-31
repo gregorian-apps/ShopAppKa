@@ -38,6 +38,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'adopt'
-    - name: BBuild with gradle
+    - name: Build with gradle
       run:  ./gradlew sonarqube -Dsonar.projectKey=gregorian-apps_ShopAppKa -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
