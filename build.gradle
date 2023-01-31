@@ -47,10 +47,15 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-project.tasks["sonarqube"].dependsOn "jacocoTestReport"
 
-sonarqube {
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+sonar {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
+project.tasks["sonar"].dependsOn "jacocoTestReport"
