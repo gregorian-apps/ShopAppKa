@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-gradle clean build sonarqube --refresh-dependencies --info
+gradle clean build --refresh-dependencies --info
