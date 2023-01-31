@@ -39,5 +39,5 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
     - name: Build with gradle
-      run:  ./gradlew sonar -Dsonar.projectKey=gregorian-apps_ShopAppKa -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=gregorian-apps
+      run:  ./gradlew clean test jacocoTestResult sonar -Dsonar.projectKey=gregorian-apps_ShopAppKa -Dsonar.host.url=${{ secrets.SONAR_HOST }} -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.organization=gregorian-apps
 
