@@ -45,7 +45,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
     - name: Build
-      run: scripts/build.sh
+      run: scripts/build_codeql.sh
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
