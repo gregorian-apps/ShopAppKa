@@ -7,6 +7,8 @@ import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.GroupRequest;
 import com.shop.list.shopappka.repositories.GroupRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,48 +42,57 @@ class GroupServiceTest {
         groupRequest = GroupRequest.builder().name("Dummy group").build();
         group = Group.builder().groupId(1L).name("Dummy group").users(null).build();
     }
-    @Test
-    void shouldCreateNewGroupWhenGroupDoesNotExistThenReturnCreatedGroup() {
-        when(groupRepository.getGroupByName(anyString())).thenReturn(Optional.empty());
-        when(groupRepository.save(any(Group.class))).thenReturn(group);
 
-        Group addedGroup = groupService.addNewGroup(groupRequest);
+    @Nested
+    @DisplayName("Test cases for addNewGroup() method")
+    class addNewGroup {
+        @Test
+        void shouldCreateNewGroupWhenGroupDoesNotExistThenReturnCreatedGroup() {
+            when(groupRepository.getGroupByName(anyString())).thenReturn(Optional.empty());
+            when(groupRepository.save(any(Group.class))).thenReturn(group);
 
-        verify(groupRepository).getGroupByName(anyString());
-        verify(groupRepository).save(any());
+            Group addedGroup = groupService.addNewGroup(groupRequest);
 
-        assertAll(
-                () -> assertEquals(group.getGroupId(), addedGroup.getGroupId()),
-                () -> assertEquals(group.getName(), addedGroup.getName()),
-                () -> assertEquals(group.getUsers(), addedGroup.getUsers())
-        );
+            verify(groupRepository).getGroupByName(anyString());
+            verify(groupRepository).save(any());
+
+            assertAll(
+                    () -> assertEquals(group.getGroupId(), addedGroup.getGroupId()),
+                    () -> assertEquals(group.getName(), addedGroup.getName()),
+                    () -> assertEquals(group.getUsers(), addedGroup.getUsers())
+            );
+        }
+
+        @Test
+        void shouldThrownGroupExistsExceptionWhenGroupExists() {
+            when(groupRepository.getGroupByName(anyString())).thenReturn(Optional.of(group));
+            assertThrows(GroupExistsException.class, () -> groupService.addNewGroup(groupRequest));
+        }
     }
 
-    @Test
-    void shouldThrownGroupExistsExceptionWhenGroupExists() {
-        when(groupRepository.getGroupByName(anyString())).thenReturn(Optional.of(group));
-        assertThrows(GroupExistsException.class, () -> groupService.addNewGroup(groupRequest));
-    }
+    @Nested
+    @DisplayName("Test cases for updateGroup() method")
+    class updateGroup {
+        @Test
+        void shouldUpdateNameGroupWhenGroupExistsThenReturnUpdatedGroup() {
+            GroupRequest updatedGroupRequest = GroupRequest.builder().name("Updated group name").build();
+            when(groupRepository.getGroupById(anyLong())).thenReturn(Optional.of(group));
+            when(groupRepository.save(any(Group.class))).thenReturn(group);
 
-    @Test
-    void shouldUpdateNameGroupWhenGroupExistsThenReturnUpdatedGroup() {
-        GroupRequest updatedGroupRequest = GroupRequest.builder().name("Updated group name").build();
-        when(groupRepository.getGroupById(anyLong())).thenReturn(Optional.of(group));
-        when(groupRepository.save(any(Group.class))).thenReturn(group);
+            Group updatedGroup = groupService.updateGroup(updatedGroupRequest, 1L);
 
-        Group updatedGroup = groupService.updateGroup(updatedGroupRequest, 1L);
+            assertAll(
+                    () -> assertEquals(updatedGroupRequest.getName(), updatedGroup.getName()),
+                    () -> assertEquals(group.getGroupId(), updatedGroup.getGroupId()),
+                    () -> assertEquals(group.getUsers(), updatedGroup.getUsers())
+            );
+        }
 
-        assertAll(
-                () -> assertEquals(updatedGroupRequest.getName(), updatedGroup.getName()),
-                () -> assertEquals(group.getGroupId(), updatedGroup.getGroupId()),
-                () -> assertEquals(group.getUsers(), updatedGroup.getUsers())
-        );
-    }
-
-    @Test
-    void shouldThrownGroupNotFoundWhenGroupNotFound() {
-        when(groupRepository.getGroupById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(GroupNotFoundException.class, () -> groupService.getGroupById(1L));
+        @Test
+        void shouldThrownGroupNotFoundWhenGroupNotFound() {
+            when(groupRepository.getGroupById(anyLong())).thenReturn(Optional.empty());
+            assertThrows(GroupNotFoundException.class, () -> groupService.getGroupById(1L));
+        }
     }
 
     @Test
