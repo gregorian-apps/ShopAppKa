@@ -71,7 +71,7 @@ public class GroupController {
     }
 
     @PostMapping("{id}/assign")
-    public ResponseEntity<?> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<UserEntity> users) {
+    public ResponseEntity<Group> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<UserEntity> users) {
         Group group = groupService.assignUsersToGroup(users, id);
         return new ResponseEntity<>(group, HttpStatus.OK);
     }
