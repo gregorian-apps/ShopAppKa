@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.controllers;
 
 import com.shop.list.shopappka.models.domain.Group;
+import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.GroupRequest;
 import com.shop.list.shopappka.services.GroupService;
 import com.shop.list.shopappka.services.MapValidationErrorService;
@@ -70,7 +71,7 @@ public class GroupController {
     }
 
     @PostMapping("{id}/assign")
-    public ResponseEntity<?> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<Long> users) {
+    public ResponseEntity<?> assignUsersToGroup(@PathVariable Long id, @RequestBody Set<UserEntity> users) {
         Group group = groupService.assignUsersToGroup(users, id);
         return new ResponseEntity<>(group, HttpStatus.OK);
     }

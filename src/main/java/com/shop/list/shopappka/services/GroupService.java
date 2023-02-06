@@ -2,7 +2,6 @@ package com.shop.list.shopappka.services;
 
 import com.shop.list.shopappka.exceptions.GroupExistsException;
 import com.shop.list.shopappka.exceptions.GroupNotFoundException;
-import com.shop.list.shopappka.exceptions.UserException;
 import com.shop.list.shopappka.models.domain.Group;
 import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.GroupRequest;
@@ -46,13 +45,9 @@ public class GroupService {
     public Group updateGroup(GroupRequest groupRequest, Long id) {
         Group group = getGroupById(id);
 
-        if (group != null) {
-            group.setName(groupRequest.getName());
-            log.info("Group with id {} has updated successfully", group.getGroupId());
-            return groupRepository.save(group);
-        }
-
-        return null;
+        group.setName(groupRequest.getName());
+        log.info("Group with id {} has updated successfully", group.getGroupId());
+        return groupRepository.save(group);
     }
 
     public void deleteGroup(Long id) {
@@ -74,17 +69,10 @@ public class GroupService {
         });
     }
 
-    public Group assignUsersToGroup(Set<Long> users, Long groupId) {
+    public Group assignUsersToGroup(Set<UserEntity> users, Long groupId) {
         Group group = getGroupById(groupId);
         Set<UserEntity> userEntities = users.stream()
-                .map(userId -> {
-                    try {
-                        return userService.getUserById(userId);
-                    } catch (UserException ue) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
+                .filter(user -> userService.existsUserByUserId(user.getUserId()))
                 .collect(Collectors.toSet());
         group.setUsers(userEntities);
         return groupRepository.save(group);
