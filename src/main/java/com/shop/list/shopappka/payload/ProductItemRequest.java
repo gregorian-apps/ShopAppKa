@@ -2,9 +2,11 @@ package com.shop.list.shopappka.payload;
 
 import com.shop.list.shopappka.models.domain.ProductType;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ProductItemRequest {
 
     @NotBlank(message = "Name of product cannot be blank")
