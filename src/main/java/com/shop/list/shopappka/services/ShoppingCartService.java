@@ -49,7 +49,7 @@ public class ShoppingCartService {
         shoppingCartRepository.delete(shoppingCart);
     }
 
-    private ShoppingCart getShoppingCartById(Long id) {
+    public ShoppingCart getShoppingCartById(Long id) {
         return shoppingCartRepository.findShoppingCartByShoppingCartId(id).orElseThrow(() -> {
             throw new ShoppingCartNotFoundException("Shopping Cart with id: " + id + " not found.");
         });

@@ -112,7 +112,6 @@ class UserServiceTest {
             user.setUsername(updateUser.getUsername());
 
             UserEntity updatedUser = userService.updateUserData(updateUser, 1L);
-            System.out.println(updatedUser);
             assertAll(
                     () -> assertNotNull(updatedUser),
                     () -> assertEquals(updateUser.getEmail(), updatedUser.getEmail()),

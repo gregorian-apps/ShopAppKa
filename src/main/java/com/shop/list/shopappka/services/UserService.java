@@ -83,4 +83,8 @@ public class UserService {
             throw new UserNotFoundException("User with id " + id + " not found");
         }
     }
+
+    public boolean existsUserByUserId(Long userId) {
+        return userRepository.existsByUserId(userId);
+    }
 }
