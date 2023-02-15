@@ -27,6 +27,7 @@ class ShoppingCartServiceTest {
     public static final String SHOPPING_CART_NAME = "Dummy name";
     public static final String DUMMY_GROUP_NAME = "Dummy group";
     public static final long GROUP_ID = 1L;
+
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
 
