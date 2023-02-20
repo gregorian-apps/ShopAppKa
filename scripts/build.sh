@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-gradle clean build --refresh-dependencies --info
+./gradlew clean build --refresh-dependencies --info
