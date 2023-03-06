@@ -12,11 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UserController.class)
 @ActiveProfiles("test")
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
     private final static String API_URL = "/api/data/users";
@@ -80,7 +80,6 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "username")
     void shouldReturnUserByIdWithStatusCode200() throws Exception {
         when(userService.getUserById(anyLong())).thenReturn(user);
         mvc.perform(MockMvcRequestBuilders
@@ -97,7 +96,6 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "username")
     void shouldReturnInfoThatUserNotFoundWithStatusCode400() throws Exception {
         when(userService.getUserById(anyLong())).thenThrow(UserNotFoundException.class);
         mvc.perform(MockMvcRequestBuilders.get(API_URL + "/1").accept(MediaType.APPLICATION_JSON))
@@ -106,7 +104,6 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "username")
     void shouldReturnListOfUsersWithStatusCode200() throws Exception {
         when(userService.getAllUsers()).thenReturn(users);
         mvc.perform(MockMvcRequestBuilders.get(API_URL).accept(MediaType.APPLICATION_JSON))
@@ -118,14 +115,13 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "username")
     void shouldUpdateUserDataWhenUpdateDataIsValidThenReturnUpdatedUserWithStatusCode200() throws Exception {
         UpdateUser updateUser = UpdateUser.builder().username("Test username").firstName("Test fistName").email("email@email.com1").build();
         user.setUsername(updateUser.getUsername());
         user.setEmail(updateUser.getEmail());
         user.setFirstName(updateUser.getFirstName());
         when(userService.updateUserData(updateUser, 1L)).thenReturn(user);
-        mvc.perform(MockMvcRequestBuilders.put(API_URL + "/update/{id}", 1L).with(SecurityMockMvcRequestPostProcessors.csrf())
+        mvc.perform(MockMvcRequestBuilders.put(API_URL + "/update/{id}", 1L)
                 .content(mapper.writeValueAsString(updateUser)).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
