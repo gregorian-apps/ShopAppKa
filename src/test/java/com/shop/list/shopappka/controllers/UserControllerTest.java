@@ -127,6 +127,7 @@ class UserControllerTest {
         when(userService.updateUserData(updateUser, 1L)).thenReturn(user);
         mvc.perform(MockMvcRequestBuilders.put(API_URL + "/update/{id}", 1L).with(SecurityMockMvcRequestPostProcessors.csrf())
                 .content(mapper.writeValueAsString(updateUser)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(updateUser.getUsername()))
