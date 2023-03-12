@@ -2,11 +2,13 @@ package com.shop.list.shopappka.payload;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class ShoppingCartRequest {
 
     @Size(min = 3, message = "Name of shopping cart should have at least 3 characters")

@@ -41,7 +41,7 @@ public class ShoppingCartController {
         }
 
         List<ProductItem> addedProductItems = productItemService.addProductItemsToShoppingCart(groupId, shoppingCartRequest.getName(), shoppingCartRequest.getProductItems());
-        return new ResponseEntity<>(addedProductItems, HttpStatus.CREATED);
+        return new ResponseEntity<>(addedProductItems, HttpStatus.OK);
 
     }
 
