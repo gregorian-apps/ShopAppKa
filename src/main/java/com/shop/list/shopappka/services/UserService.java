@@ -1,7 +1,5 @@
 package com.shop.list.shopappka.services;
 
-import com.shop.list.shopappka.exceptions.UserException;
-import com.shop.list.shopappka.exceptions.UserExistsException;
 import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.UserEntity;
@@ -31,19 +29,6 @@ public class UserService {
     }
 
     public UserEntity signUpNewUser(@NotNull UserRequest userRequest) {
-        Optional<UserEntity> userByEmailExists = userRepository.findUserByEmail(userRequest.getEmail());
-        Optional<UserEntity> userByLoginExists = userRepository.findUserByUsername(userRequest.getUsername());
-
-        if(userByEmailExists.isPresent()){
-            log.warn("User with email {} exists in the system", userByEmailExists.get().getEmail());
-            throw new UserExistsException("User with email: " + userByEmailExists.get().getEmail() + " exists in the system");
-        }
-
-        if(userByLoginExists.isPresent()){
-            log.warn("User with email {} exists in the system", userByLoginExists.get().getUsername());
-            throw new UserExistsException("User with login: " + userByLoginExists.get().getUsername() + " exists in the system");
-        }
-
         UserEntity user = UserEntity.builder()
                 .username(userRequest.getUsername())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
@@ -54,19 +39,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserEntity updateUserData(@NonNull UpdateUser updateUser, Long id) throws UserException {
-        Optional<UserEntity> existingUser = userRepository.findById(id);
-
-        if(existingUser.isPresent()) {
-            UserEntity user = existingUser.get();
-            user.setEmail(updateUser.getEmail());
-            user.setUsername(updateUser.getUsername());
-            user.setFirstName(updateUser.getFirstName());
-            return userRepository.save(user);
-        } else {
-            log.error("User with id {} doesn't exist in the system", id);
-            throw new UserNotFoundException("User doesn't exist in the system with id: " + id);
-        }
+    public UserEntity updateUserData(@NonNull UpdateUser updateUser, Long id) {
+        UserEntity user = getUserById(id);
+        user.setEmail(updateUser.getEmail());
+        user.setUsername(updateUser.getUsername());
+        user.setFirstName(updateUser.getFirstName());
+        return userRepository.save(user);
     }
 
     public List<UserEntity> getAllUsers() {
@@ -86,5 +64,15 @@ public class UserService {
 
     public boolean existsUserByUserId(Long userId) {
         return userRepository.existsByUserId(userId);
+    }
+    
+    public boolean existsUserByEmail(String email) {
+        Optional<UserEntity> optionalUser = userRepository.findUserByEmail(email);
+        return optionalUser.isPresent();
+    }
+
+    public boolean existsUserByUsername(String username) {
+        Optional<UserEntity> optionalUser = userRepository.findUserByUsername(username);
+        return optionalUser.isPresent();
     }
 }

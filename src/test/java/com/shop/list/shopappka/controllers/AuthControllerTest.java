@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -63,6 +64,8 @@ class AuthControllerTest {
         UserEntity user = UserEntity.builder().userId(1L).firstName("New FirstName").username("New Username").password("Dummy password").email("email@email.com").build();
         when(mapValidationErrorService.mapValidationError(any())).thenReturn(null);
         when(userService.signUpNewUser(userRequest)).thenReturn(user);
+        when(userService.existsUserByUsername(anyString())).thenReturn(false);
+        when(userService.existsUserByEmail(anyString())).thenReturn(false);
 
         mvc.perform(MockMvcRequestBuilders.post(API_URL + "signUp")
                         .content(mapper.writeValueAsString(userRequest))
@@ -76,13 +79,37 @@ class AuthControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestWhenUserToRegisterIsNull() throws Exception {
-        UserRequest userRequest = null;
+    void shouldThrownUserExistsExceptionWhenUserExistsByEmailThenReturnInformationAboutExistenceWithStatusCode400() throws Exception {
+        UserRequest userRequest = UserRequest.builder().firstName("New FirstName").username("New Username").password("Dummy password").email("email@email.com").build();
+        UserEntity user = UserEntity.builder().userId(1L).firstName("New FirstName").username("New Username").password("Dummy password").email("email@email.com").build();
+        when(mapValidationErrorService.mapValidationError(any())).thenReturn(null);
+        when(userService.signUpNewUser(userRequest)).thenReturn(user);
+        when(userService.existsUserByUsername(anyString())).thenReturn(false);
+        when(userService.existsUserByEmail(anyString())).thenReturn(true);
+
         mvc.perform(MockMvcRequestBuilders.post(API_URL + "signUp")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(userRequest)))
+                        .content(mapper.writeValueAsString(userRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("User with email: " + userRequest.getEmail() +  " exists in the system"));
+    }
+
+    @Test
+    void shouldThrownUserExistsExceptionWhenUserExistsByUsernameThenReturnInformationAboutExistenceWithStatusCode400() throws Exception {
+        UserRequest userRequest = UserRequest.builder().firstName("New FirstName").username("New Username").password("Dummy password").email("email@email.com").build();
+        UserEntity user = UserEntity.builder().userId(1L).firstName("New FirstName").username("New Username").password("Dummy password").email("email@email.com").build();
+        when(mapValidationErrorService.mapValidationError(any())).thenReturn(null);
+        when(userService.signUpNewUser(userRequest)).thenReturn(user);
+        when(userService.existsUserByUsername(anyString())).thenReturn(true);
+        when(userService.existsUserByEmail(anyString())).thenReturn(false);
+
+        mvc.perform(MockMvcRequestBuilders.post(API_URL + "signUp")
+                        .content(mapper.writeValueAsString(userRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("User with username: " + userRequest.getUsername() + " exists in the system"));
     }
 
     @Test

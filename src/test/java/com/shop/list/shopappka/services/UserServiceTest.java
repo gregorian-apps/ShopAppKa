@@ -1,6 +1,5 @@
 package com.shop.list.shopappka.services;
 
-import com.shop.list.shopappka.exceptions.UserExistsException;
 import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.Role;
 import com.shop.list.shopappka.models.domain.UserEntity;
@@ -60,39 +59,20 @@ class UserServiceTest {
                 .build();
     }
 
-    @Nested
-    @DisplayName("Test cases for signUpUser() method")
-    class signUpUser {
-        @Test
-        void shouldReturnSignedUpUserObjectWhenObjectExists() {
-            when(userRepository.findUserByEmail(userRequest.getEmail())).thenReturn(Optional.empty());
-            when(userRepository.findUserByUsername(userRequest.getUsername())).thenReturn(Optional.empty());
-            when(passwordEncoder.encode(userRequest.getPassword())).thenReturn("gadsdhgaj#8asd9u1sh");
-            when(userRepository.save(any(UserEntity.class))).thenReturn(user);
+    @Test
+    void shouldReturnSignedUpUserObjectWhenObjectExists() {
+        when(passwordEncoder.encode(userRequest.getPassword())).thenReturn("gadsdhgaj#8asd9u1sh");
+        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
 
-            UserEntity savedUser = userService.signUpNewUser(userRequest);
+        UserEntity savedUser = userService.signUpNewUser(userRequest);
 
-            assertAll(
-                    () -> assertNotNull(savedUser),
-                    () -> assertEquals(user.getUsername(), savedUser.getUsername()),
-                    () -> assertEquals(user.getEmail(), savedUser.getEmail()),
-                    () -> assertEquals(user.getRole(), savedUser.getRole()),
-                    () -> assertNotNull(savedUser.getUserId())
-            );
-        }
-
-        @Test
-        void shouldThrownUserExistsExceptionWhenUserEmailExistsInTheSystem() {
-            when(userRepository.findUserByEmail(anyString())).thenReturn(Optional.of(user));
-            assertThrows(UserExistsException.class, () -> userService.signUpNewUser(userRequest));
-        }
-
-
-        @Test
-        void shouldThrownUserExistsExceptionWhenUserUsernameExistsInTheSystem() {
-            when(userRepository.findUserByUsername(anyString())).thenReturn(Optional.of(user));
-            assertThrows(UserExistsException.class, () -> userService.signUpNewUser(userRequest));
-        }
+        assertAll(
+                () -> assertNotNull(savedUser),
+                () -> assertEquals(user.getUsername(), savedUser.getUsername()),
+                () -> assertEquals(user.getEmail(), savedUser.getEmail()),
+                () -> assertEquals(user.getRole(), savedUser.getRole()),
+                () -> assertNotNull(savedUser.getUserId())
+        );
     }
 
     @Nested
@@ -189,4 +169,23 @@ class UserServiceTest {
         }
     }
 
+    @Test
+    void shouldReturnTrueWhenUserExistsByEmail() {
+        when(userRepository.findUserByEmail(anyString())).thenReturn(Optional.of(user));
+        boolean actualValue = userService.existsUserByEmail(userRequest.getEmail());
+        assertTrue(actualValue);
+    }
+
+    @Test
+    void shouldReturnTrueWhenUserExistsByUsername() {
+        when(userRepository.findUserByUsername(anyString())).thenReturn(Optional.of(user));
+        boolean actualValue = userService.existsUserByUsername(userRequest.getUsername());
+        assertTrue(actualValue);
+    }
+    @Test
+    void shouldReturnTrueWhenUserExistsById()  {
+        when(userRepository.existsByUserId(anyLong())).thenReturn(true);
+        boolean actualValue = userService.existsUserByUserId(user.getUserId());
+        assertTrue(actualValue);
+    }
 }

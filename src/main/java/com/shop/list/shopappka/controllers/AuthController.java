@@ -1,6 +1,7 @@
 package com.shop.list.shopappka.controllers;
 
 import com.shop.list.shopappka.configurations.auth.TokenProvider;
+import com.shop.list.shopappka.exceptions.UserExistsException;
 import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.JwtTokenResponse;
 import com.shop.list.shopappka.payload.LoginRequest;
@@ -47,6 +48,16 @@ public class AuthController {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
         if (errorMap != null) {
             return errorMap;
+        }
+
+        if(userService.existsUserByEmail(user.getEmail())) {
+            log.warn("User with email {} exists in the system", user.getEmail());
+            throw new UserExistsException("User with email: " + user.getEmail() + " exists in the system");
+        }
+
+        if(userService.existsUserByUsername(user.getUsername())) {
+            log.warn("User with email {} exists in the system", user.getUsername());
+            throw new UserExistsException("User with username: " + user.getUsername() + " exists in the system");
         }
 
         UserEntity user1 = userService.signUpNewUser(user);
