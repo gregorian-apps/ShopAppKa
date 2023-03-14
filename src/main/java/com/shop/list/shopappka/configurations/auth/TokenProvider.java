@@ -19,10 +19,10 @@ public class TokenProvider implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Value("${shopappka.app.jwtSecret}")
-    private String jwtSecret;
+    String jwtSecret;
 
     @Value("${shopappka.app.jwtExpirationMs}")
-    private Long jwtExpirationMs;
+    Long jwtExpirationMs;
 
     public String generateToken(Authentication auth) {
         String username = auth.getName();
