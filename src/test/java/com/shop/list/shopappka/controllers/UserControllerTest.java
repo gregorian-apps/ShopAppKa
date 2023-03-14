@@ -27,6 +27,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -83,7 +84,7 @@ class UserControllerTest {
     void shouldReturnUserByIdWithStatusCode200() throws Exception {
         when(userService.getUserById(anyLong())).thenReturn(user);
         mvc.perform(MockMvcRequestBuilders
-                        .get(API_URL +"/1")
+                        .get(API_URL + "/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -100,7 +101,7 @@ class UserControllerTest {
         when(userService.getUserById(anyLong())).thenThrow(UserNotFoundException.class);
         mvc.perform(MockMvcRequestBuilders.get(API_URL + "/1").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -121,13 +122,26 @@ class UserControllerTest {
         user.setEmail(updateUser.getEmail());
         user.setFirstName(updateUser.getFirstName());
         when(userService.updateUserData(updateUser, 1L)).thenReturn(user);
+        when(userService.existsUserByUserId(anyLong())).thenReturn(true);
         mvc.perform(MockMvcRequestBuilders.put(API_URL + "/update/{id}", 1L)
-                .content(mapper.writeValueAsString(updateUser)).contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(updateUser)).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(1L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(updateUser.getUsername()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(updateUser.getEmail()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updateUser.getFirstName()));
+    }
+
+    @Test
+    void shouldThrownUSerNtFoundExceptionDuringUpdateUserDataWhenUserNotFoundThenReturnInformationAboutThatWithStatus404() throws Exception {
+        UpdateUser updateUser = UpdateUser.builder().username("Test username").firstName("Test fistName").email("email@email.com1").build();
+        when(userService.existsUserByUserId(anyLong())).thenReturn(false);
+        when(userService.updateUserData(updateUser, 1L)).thenReturn(user);
+        mvc.perform(MockMvcRequestBuilders.put(API_URL + "/update/{id}", 1L)
+                        .content(mapper.writeValueAsString(updateUser)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").value("User doesn't exist in the system with id: " + user.getUserId()));
     }
 }

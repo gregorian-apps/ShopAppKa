@@ -1,5 +1,6 @@
 package com.shop.list.shopappka.controllers;
 
+import com.shop.list.shopappka.exceptions.UserNotFoundException;
 import com.shop.list.shopappka.models.domain.UserEntity;
 import com.shop.list.shopappka.payload.UpdateUser;
 import com.shop.list.shopappka.services.MapValidationErrorService;
@@ -12,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -31,9 +31,9 @@ public class UserController {
     @PutMapping("update/{id}")
     public ResponseEntity<?> updateUserData(@PathVariable("id") Long id, @Valid @RequestBody UpdateUser updateUser, BindingResult result) {
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-        if (Objects.isNull(updateUser)) {
-            log.error("UpdateUserData is null");
-            return new ResponseEntity<>("Request body with data for updating user is null", HttpStatus.BAD_REQUEST);
+        if (!userService.existsUserByUserId(id)) {
+            log.error("User with id {} doesn't exist in the system", id);
+            throw new UserNotFoundException("User doesn't exist in the system with id: " + id);
         }
 
         if (errorMap != null) {

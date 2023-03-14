@@ -33,4 +33,28 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         String exceptionResponse = pie.getMessage();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleUserNotFountException(UserNotFoundException ex) {
+        String exceptionResponse = ex.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleGroupNotFoundException(GroupNotFoundException ge) {
+        String exceptionResponse = ge.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleShoppingCartNotFoundException(ShoppingCartNotFoundException sce) {
+        String exceptionResponse = sce.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleProductItemNotFoundException(ProductItemNotFoundException pie) {
+        String exceptionResponse = pie.getMessage();
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
 }
