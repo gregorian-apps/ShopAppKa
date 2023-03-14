@@ -89,13 +89,13 @@ class ProductItemControllerTest {
     }
 
     @Test
-    void shouldThrownProductItemNotFoundExceptionWhenProductItemNotFoundThenReturnStatusCode400() throws Exception {
+    void shouldThrownProductItemNotFoundExceptionWhenProductItemNotFoundThenReturnStatusCode404() throws Exception {
         when(productItemService.updateProductItemInShoppingCart(anyLong(), anyLong(), any())).thenThrow(ProductItemNotFoundException.class);
         mvc.perform(MockMvcRequestBuilders.put(API_URL + "/{productId}", 1L, 1L, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(productItemRequest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test

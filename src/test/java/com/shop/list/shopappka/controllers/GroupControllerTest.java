@@ -94,11 +94,11 @@ class GroupControllerTest {
     }
 
     @Test
-    void shouldReturnInformationAboutGroupNotFoundWithStatus400() throws Exception {
+    void shouldReturnInformationAboutGroupNotFoundWithStatus404() throws Exception {
         when(groupService.getGroupById(anyLong())).thenThrow(GroupNotFoundException.class);
         mvc.perform(MockMvcRequestBuilders.get(API_URL + "/{id}", 3L).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -143,11 +143,11 @@ class GroupControllerTest {
     }
 
     @Test
-    void shouldThrowGroupNotFoundExceptionWhenGroupNotFoundThenReturnInfoWithStatus400() throws Exception {
+    void shouldThrowGroupNotFoundExceptionWhenGroupNotFoundThenReturnInfoWithStatus404() throws Exception {
         doThrow(new GroupNotFoundException(group.getName())).when(groupService).deleteGroup(anyLong());
         mvc.perform(MockMvcRequestBuilders.delete(API_URL + "/delete/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
