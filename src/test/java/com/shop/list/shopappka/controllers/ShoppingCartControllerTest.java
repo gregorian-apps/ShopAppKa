@@ -116,14 +116,14 @@ class ShoppingCartControllerTest {
     }
 
     @Test
-    void shouldThrownShoppingCartNotFoundExceptionWhenShoppingCartNotFoundThenReturnStatusCode400() throws Exception {
+    void shouldThrownShoppingCartNotFoundExceptionWhenShoppingCartNotFoundThenReturnStatusCode404() throws Exception {
         when(mapValidationErrorService.mapValidationError(any())).thenReturn(null);
         when(shoppingCartService.updateNameOfShoppingCart(anyLong(),anyString())).thenThrow(ShoppingCartNotFoundException.class);
         mvc.perform(MockMvcRequestBuilders.put(API_URL + "/{shoppingCartId}", 1L, 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(shoppingCartRequest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
